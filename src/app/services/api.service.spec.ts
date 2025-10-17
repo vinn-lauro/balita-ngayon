@@ -5,6 +5,12 @@ import { MOCK_NEWS } from '../testing/MOCK_NEWS';
 import { HttpClient, HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { asyncData } from '../testing/helper/asyncData';
 import { throwError } from 'rxjs';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import { environment } from '../../environments/environment';
 
 describe('ApiService', () => {
   describe('initialization', () => {
@@ -72,5 +78,47 @@ describe('ApiService', () => {
     });
   });
 
-  describe('HttpCleint (with mocks)', () => {});
+  describe('HttpClient (with mocks)', () => {
+    let httpClient: HttpClient;
+    let httpTestingController: HttpTestingController;
+    let apiService: ApiService;
+
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [],
+        providers: [provideHttpClient(), provideHttpClientTesting()],
+      });
+
+      httpClient = TestBed.inject(HttpClient);
+      httpTestingController = TestBed.inject(HttpTestingController);
+      apiService = TestBed.inject(ApiService);
+    });
+
+    afterEach(() => {
+      httpTestingController.verify();
+    });
+
+    describe('#getNews', () => {
+      let expectedNews: any;
+
+      beforeEach(() => {
+        apiService = TestBed.inject(ApiService);
+        expectedNews = MOCK_NEWS;
+      });
+
+      it('should return expected news(called once)', () => {
+        const url = `${environment.api.url}?access_key=${environment.api.key}`;
+        apiService.getNews().subscribe({
+          next: (news) => {
+            expect(news).withContext('should return expected news').toEqual(expectedNews);
+          },
+          error: fail,
+        });
+
+        const req = httpTestingController.expectOne(url);
+        expect(req.request.method).toEqual('GET');
+        req.flush(expectedNews);
+      });
+    });
+  });
 });
