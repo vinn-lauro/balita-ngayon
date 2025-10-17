@@ -71,4 +71,6 @@ describe('ApiService', () => {
       });
     });
   });
+
+  describe('HttpCleint (with mocks)', () => {});
 });
