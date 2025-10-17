@@ -13,6 +13,10 @@ export class ApiService {
   constructor(private readonly http: HttpClient) {}
 
   public getNews(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}?access_key=${this.apiKey}`);
+    return this.http.get<any>(`${this.apiUrl}?access_key=${this.apiKey}`).pipe(
+      catchError((error) => {
+        return throwError(() => error.error.error);
+      })
+    );
   }
 }

@@ -49,5 +49,26 @@ describe('ApiService', () => {
       });
       expect(httpClientSpy.get.calls.count()).withContext('one call').toBe(1);
     });
+
+    it('should return an error when server returns a 404', (done: DoneFn) => {
+      const errorResponse = new HttpErrorResponse({
+        error: {
+          error: {
+            code: '404_not_found',
+            message: '404 not found',
+          },
+        },
+      });
+
+      httpClientSpy.get.and.returnValue(throwError(() => errorResponse));
+
+      apiService.getNews().subscribe({
+        next: (news) => done.fail('expected an error, not news'),
+        error: (error) => {
+          expect(error.code).toContain('404_not_found');
+          done();
+        },
+      });
+    });
   });
 });
