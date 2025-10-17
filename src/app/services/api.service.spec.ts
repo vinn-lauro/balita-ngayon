@@ -5,12 +5,9 @@ import { MOCK_NEWS } from '../testing/MOCK_NEWS';
 import { HttpClient, HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { asyncData } from '../testing/helper/asyncData';
 import { throwError } from 'rxjs';
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { environment } from '../../environments/environment';
+import { NewsModel } from '../models/news.model';
 
 describe('ApiService', () => {
   describe('initialization', () => {
@@ -42,7 +39,7 @@ describe('ApiService', () => {
     });
 
     it('should return expected news (HttpClient called once)', (done: DoneFn) => {
-      const expectedNews = MOCK_NEWS;
+      const expectedNews: NewsModel = MOCK_NEWS;
 
       httpClientSpy.get.and.returnValue(asyncData(expectedNews));
 

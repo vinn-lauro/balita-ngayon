@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { NewsModel } from '../models/news.model';
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +13,8 @@ export class ApiService {
 
   constructor(private readonly http: HttpClient) {}
 
-  public getNews(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}?access_key=${this.apiKey}`).pipe(
+  public getNews(): Observable<NewsModel> {
+    return this.http.get<NewsModel>(`${this.apiUrl}?access_key=${this.apiKey}`).pipe(
       catchError((error) => {
         return throwError(() => error.error.error);
       })
