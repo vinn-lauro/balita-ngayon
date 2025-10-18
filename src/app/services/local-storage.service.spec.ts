@@ -69,6 +69,15 @@ describe('LocalStorageService', () => {
       expect(result).toEqual(expectedNews);
     });
 
+    it('should call localStorage.getItem and return null', () => {
+      const key = 'news';
+      const result = localStorageService.getItem(key);
+
+      expect(getItemSpy).toHaveBeenCalledTimes(1);
+      expect(getItemSpy).toHaveBeenCalledWith('news');
+      expect(result).toEqual(null);
+    });
+
     it('should remove data from local storage', () => {
       const key = 'news';
       const expectedNews = MOCK_NEWS;
