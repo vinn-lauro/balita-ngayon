@@ -48,4 +48,27 @@ describe('NewsPage', () => {
       expect(component.new$).toBeDefined();
     });
   });
+
+  describe('testing with spy', () => {
+    let component: NewsPage;
+    let fixture: ComponentFixture<NewsPage>;
+    let getNewsSpy: jasmine.Spy;
+
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        providers: [ApiService, provideHttpClient()],
+      });
+      const apiService = TestBed.inject(ApiService);
+      getNewsSpy = spyOn(apiService, 'getNews').and.returnValue(of(MOCK_NEWS));
+
+      fixture = TestBed.createComponent(NewsPage);
+      fixture.autoDetectChanges();
+      component = fixture.componentInstance;
+    });
+
+    it('should show news after component initialized', async () => {
+      await fixture.whenStable();
+      expect(getNewsSpy.calls.any()).withContext('onGetNews called').toBe(true);
+    });
+  });
 });
